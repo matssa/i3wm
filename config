@@ -150,7 +150,7 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # Custom font 
-font pango:FontAwesome Italic 10
+font pango:FontAwesome Italic 20
 
 # Removing the edges of windows
 hide_edge_borders both
@@ -178,7 +178,7 @@ bar {
         position top
         status_command i3status
 	tray_padding 0
-	font pango:FontAwesome Italic 10
+	font pango:FontAwesome Italic 20
 	separator_symbol " | "
 	colors {
         	background $inactive-bg-color
@@ -198,18 +198,15 @@ exec chromium-browser
 exec gnome-terminal
 
 # Suspend/hibernate
-bindsym $mod+Shift+s exec --no-startup-id i3lock -e -c ff7f2a && systemctl suspend
 bindsym $mod+Shift+h exec --no-startup-id HIBERNATE
+# bindsym $mod+Shift+s exec --no-startup-id i3lock -e -c ff7f2a && systemctl suspend
+bindsym $mod+Shift+s exec --no-startup-id i3lock -e -u -i ~/Pictures/windows_update.png && systemctl suspend
 
-# Adjust screen resolution at startup
-exec xrandr --output eDP-1-1 --mode 1920x1080
+# Set 4k monitor to the right of the screen
+bindsym $mod+Ctrl+r exec xrandr --output HDMI1 --auto --right-of eDP1
 
-# Set mouse to natural scrolling
-exec_always --no-startup-id synclient HorizEdgeScroll=1 VertEdgeScroll=1 VertScrollDelta=-111
-
-# Set touchpad horizontal inverted scrolling
-exec_always --no-startup-id xinput --set-prop 14 "Synaptics Two-Finger Scrolling" 1 1
-exec_always --no-startup-id xinput --set-prop 14 "Synaptics Scrolling Distance" -111 -76
+# Set touchpad (id14) to natural scrolling (option 298)
+exec --no-startup-id xinput set-prop 14 298 1
 
 # Num lock on at startup
 exec --no-startup-id numlockx on
@@ -223,14 +220,26 @@ bindsym $mod+Shift+Print exec maim -s ~/screenshot_$(date +%s).png
 # bindsym $mod+Ctrl+Print exec maim -i $(xdotool getactivewindow) ~/screenshot_$(date +%s).png
 
 # screen brightness adjustment
-bindsym XF86MonBrightnessDown exec --no-startup-id xrandr --output eDP-1-1 --brightness $(echo "$(xrandr --verbose |grep Brightness |grep -o '[0-9].*')-0.1" | bc)
-bindsym XF86MonBrightnessUp exec --no-startup-id xrandr --output eDP-1-1 --brightness $(echo "$(xrandr --verbose |grep Brightness |grep -o '[0-9].*')+0.1" | bc)
+bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 2
+bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 2
+# Super boost mode!
+bindsym Shift+XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 20
+bindsym Shift+XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 20
+
+
+# screen brightness adjustment
+# bindsym XF86MonBrightnessDown exec --no-startup-id xrandr --output eDP-1 --brightness $(echo "$(xrandr --verbose |grep Brightness |grep -o '[0-9].*')-0.1" | bc)
+# bindsym XF86MonBrightnessUp exec --no-startup-id xrandr --output eDP-1 --brightness $(echo "$(xrandr --verbose |grep Brightness |grep -o '[0-9].*')+0.1" | bc)
+
+
+# Adjust screen resolution at startup
+exec xrandr -s 1920x1080
 
 # Adjust sound volume
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% && killall -SIGUSR1 i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% && killall -SIGUSR1 i3status
-bindsym XF86AudioMute exec --no-startup-id pactl -- set-sink-mute 0 toggle && killall -SIGUSR1 i3status
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% && killall -SIGUSR1 i3status
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% && killall -SIGUSR1 i3status
+#bindsym XF86AudioMute exec --no-startup-id pactl -- set-sink-mute 0 toggle && killall -SIGUSR1 i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl -- set-source-mute 1 toggle && killall -SIGUSR1 i3status
-#bindsym XF86AudioRaiseVolume exec --no-startup-id amixer sset Master 5%+ && killall -SIGUSR1 i3status
-#bindsym XF86AudioLowerVolume exec --no-startup-id amixer sset Master 5%- && killall -SIGUSR1 i3status
-#bindsym XF86AudioMute exec --no-startup-id amixer sset Master toggle && killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer sset Master 5%+ && killall -SIGUSR1 i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer sset Master 5%- && killall -SIGUSR1 i3status
+bindsym XF86AudioMute exec --no-startup-id amixer sset Master toggle && killall -SIGUSR1 i3status
